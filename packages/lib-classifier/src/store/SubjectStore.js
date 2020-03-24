@@ -130,11 +130,16 @@ const SubjectStore = types
 
     function append (newSubjects) {
       newSubjects.forEach(subject => {
-        self.resources.put(subject)
+        try {
+          self.resources.put(subject)
+        } catch (error) {
+          console.error(`Subject ${subject.id} is not a valid subject.`)
+          console.error(error)
+        }
       })
 
       const validSubjectReference = isValidReference(() => self.active)
-      if (!validSubjectReference) {
+      if (!validSubjectReference && self.resources.size > 0) {
         self.advance()
       }
     }
